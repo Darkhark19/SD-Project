@@ -93,9 +93,6 @@ public class JavaUsers implements Users {
             DirectoryClientFactory.deleteUserFiles(userId);
             user = users.remove(userId);
         }
-
-
-        // Result.error(Result.ErrorCode.NOT_FOUND);
         return Result.ok(user);
     }
 

@@ -21,7 +21,7 @@ public class UsersWebService implements SoapUsers {
 	private final Users impl = new JavaUsers();
 	public UsersWebService() {
 	}
-	public static <T> T result(Result<T> result) throws UsersException {
+	private static <T> T result(Result<T> result) throws UsersException {
 		if (result.isOK())
 			return result.value();
 		else
@@ -66,10 +66,4 @@ public class UsersWebService implements SoapUsers {
 		return result(result);
 	}
 
-
-	private boolean badUserData(User user) {
-		//TODO check user data...
-		return false;
-	}
-	
 }

@@ -8,6 +8,8 @@ import java.net.URI;
 import java.util.List;
 
 public class SoapDirectoryClient implements Directory {
+
+    private static final String WSDL = "directory/?wsdl";
     public SoapDirectoryClient(URI uri) {
     }
 

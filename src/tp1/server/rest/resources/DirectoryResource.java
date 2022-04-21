@@ -12,7 +12,7 @@ import java.util.List;
 public class DirectoryResource extends Resource implements RestDirectory {
     private static Logger Log = Logger.getLogger(DirectoryResource.class.getName());
 
-    public final JavaDirectory directory = new JavaDirectory();
+    private final JavaDirectory directory = new JavaDirectory();
     public DirectoryResource(){
     }
     @Override

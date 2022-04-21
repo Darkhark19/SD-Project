@@ -1,15 +1,10 @@
 package tp1.api.service;
 
-import jakarta.ws.rs.WebApplicationException;
-import tp1.api.service.rest.RestFiles;
 import tp1.api.service.util.Files;
 import tp1.api.service.util.Result;
 
-//import java.io.File;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Arrays;
 
 public class JavaFiles implements Files {
     private static final String DIR_PATH = "data";

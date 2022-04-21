@@ -6,7 +6,7 @@ import tp1.api.service.util.Result;
 import java.net.URI;
 
 public class SoapFilesClient implements Files{
-
+    private static final String WSDL = "files/?wsdl";
     public SoapFilesClient(URI u) {
     }
 

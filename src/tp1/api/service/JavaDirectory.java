@@ -13,10 +13,7 @@ import tp1.discovery.Discovery;
 import tp1.server.rest.FilesServer;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
@@ -41,15 +38,17 @@ public class JavaDirectory implements Directory {
         }
         String path = userId + DELIMITER + filename;
         FileInfo f = files.get(path);
-        URI[] files = Discovery.getInstance().knownUrisOf(FilesServer.SERVICE, 1);
+       // URI[] files = Discovery.getInstance().knownUrisOf(FilesServer.SERVICE,1);
+
         String url = null;
         if (f == null) {
             f = new FileInfo();
             f.setFilename(filename);
             f.setOwner(userId);
-            int position = (int) Math.round(Math.random() * (files.length - 1));
+            //int position = (int) Math.round(Math.random() * (files.length - 1));
             //Log.info(String.valueOf(files.length));
-            url = files[position].toString();
+            //url = files[position].toString();
+            url = FilesClientFactory.getNewClient().toString();
             f.setFileURL(String.format(url + RestFiles.PATH + "/%s", path));
             Set<String> share = f.getSharedWith();
             if (share == null)
@@ -60,7 +59,7 @@ public class JavaDirectory implements Directory {
         } else {
             url = f.getFileURL().split(RestFiles.PATH + "/" + path)[0];
         }
-         FilesClientFactory.getClient(URI.create(url)).writeFile(path, data, "");
+        FilesClientFactory.getClient(URI.create(url)).writeFile(path, data, "");
         return Result.ok(f);
     }
 
@@ -78,7 +77,7 @@ public class JavaDirectory implements Directory {
             return Result.error(Result.ErrorCode.BAD_REQUEST);
         }
         String url = f.getFileURL().split(RestFiles.PATH + "/" + path)[0];
-        FilesClientFactory.getClient(URI.create(url)).deleteFile(path, "");
+        FilesClientFactory.deleteFile(url,path," ");
         return Result.ok();
     }
 
@@ -189,6 +188,10 @@ public class JavaDirectory implements Directory {
                 FilesClientFactory.getClient(URI.create(url)).deleteFile(path, "");
             }
         }
+
         return Result.ok();
+    }
+    private void redistribute(){
+        Map<URI,Integer> mp = FilesClientFactory.getServerFiles();
     }
 }

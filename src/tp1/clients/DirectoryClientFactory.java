@@ -13,6 +13,7 @@ import tp1.server.rest.DirectoryServer;
 import tp1.server.rest.UsersServer;
 
 public class DirectoryClientFactory {
+
     public static Directory getClient() {
         var serverURI = Discovery.getInstance().knownUrisOf(DirectoryServer.SERVICE,1);// use discovery to find a uri of the Users service;
         if( serverURI[0].toString().endsWith("rest"))
@@ -22,6 +23,13 @@ public class DirectoryClientFactory {
     }
 
     public static Result<Void> deleteUserFiles(String userId){
-        return getClient().deleteClientFiles(userId);
+        var serverURI = Discovery.getInstance().knownUrisOf(DirectoryServer.SERVICE);
+        if(serverURI != null) {
+            if (serverURI[0].toString().endsWith("rest"))
+                return new RestDirectoryClient(serverURI[0]).deleteClientFiles(userId);
+            else
+                return new SoapDirectoryClient(serverURI[0]).deleteClientFiles(userId);
+        }
+        return Result.ok();
     }
 }

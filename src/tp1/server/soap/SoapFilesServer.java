@@ -1,6 +1,7 @@
 package tp1.server.soap;
 
 import jakarta.xml.ws.Endpoint;
+import tp1.discovery.Discovery;
 import tp1.server.soap.WebService.FilesWebService;
 
 import java.net.InetAddress;
@@ -27,7 +28,7 @@ public class SoapFilesServer {
         String serverURI = String.format(SERVER_BASE_URI, ip, PORT);
 
         Endpoint.publish(serverURI.replace(ip, "0.0.0.0"), new FilesWebService());
-
+        Discovery.getInstance().announce(SERVICE_NAME, serverURI);
         Log.info(String.format("%s Soap Server ready @ %s\n", SERVICE_NAME, serverURI));
     }
 }

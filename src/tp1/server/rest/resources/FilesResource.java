@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class FilesResource extends Resource implements RestFiles {
 
     private static Logger Log = Logger.getLogger(FilesResource.class.getName());
-    public final Files impl = new JavaFiles();
+    private final Files impl = new JavaFiles();
 
     public FilesResource() {
     }
