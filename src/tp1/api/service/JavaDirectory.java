@@ -78,6 +78,10 @@ public class JavaDirectory implements Directory {
         }
         String url = f.getFileURL().split(RestFiles.PATH + "/" + path)[0];
         FilesClientFactory.deleteFile(url,path," ");
+        redistribute();
+        for(Map.Entry<URI,Integer> p: FilesClientFactory.getServerFiles().entrySet()) {
+            System.out.println(p.getKey() + " "+ p.getValue());
+        }
         return Result.ok();
     }
 
@@ -188,10 +192,47 @@ public class JavaDirectory implements Directory {
                 FilesClientFactory.getClient(URI.create(url)).deleteFile(path, "");
             }
         }
-
+        redistribute();
         return Result.ok();
     }
     private void redistribute(){
         Map<URI,Integer> mp = FilesClientFactory.getServerFiles();
+        Map.Entry<URI,Integer> min = null;
+        Map.Entry<URI,Integer> max = null;
+        for(Map.Entry<URI,Integer> e: mp.entrySet()){
+            if(min == null)
+                min = e;
+            if(max == null)
+                max = e;
+            if(e.getValue() < min.getValue())
+                min = e;
+            if(e.getValue() > max.getValue())
+                max = e;
+        }
+        if(max != null && min != null) {
+            int diffFiles = max.getValue() - min.getValue();
+            int counter = 0;
+            int maxFilesDistribute = diffFiles /2;
+            if (diffFiles > 2) {
+                for(Map.Entry<String,FileInfo> f : files.entrySet() ){
+                    if(counter < maxFilesDistribute) {
+                        FileInfo file = f.getValue();
+                        String fileId = f.getKey();
+                        if (file.getFileURL().contains(max.getKey().toString())) {
+                            String url = file.getFileURL().split(RestFiles.PATH + "/" + fileId)[0];
+                            Result<byte[]> result = FilesClientFactory.getClient(URI.create(url))
+                                    .getFile(fileId, "");
+                            if(result.isOK()) {
+                                FilesClientFactory.deleteFile(url, fileId, " ");
+                                FilesClientFactory.writeFile(URI.create(url),fileId,result.value(),"");
+                                file.setFileURL(String.format(url + RestFiles.PATH + "/%s", fileId));
+                                counter++;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
     }
 }

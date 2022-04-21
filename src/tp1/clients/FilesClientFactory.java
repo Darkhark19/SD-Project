@@ -54,4 +54,10 @@ public class FilesClientFactory {
         serverFiles.put(uri,numFiles);
 
     }
+    public static synchronized void writeFile(URI u, String fileID, byte[] content, String token){
+        getClient(u).writeFile(fileID, content, "");
+        int result = serverFiles.get(u);
+        serverFiles.put(u, result + 1);
+
+    }
 }
